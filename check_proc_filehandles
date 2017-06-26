@@ -77,13 +77,17 @@ for my $pid (@pids) {
   # If we find a critical, exit immediately.  There may be other bad processes
   # but they can't be worse...
   if ($percentage > $critical) {
-    print "$test CRITICAL: Process $pid $percentage% open filehandles: $fdCount/$limit\n";
+    my $name = `ps -p $pid -o comm=`;
+    chomp($name);
+    print "$test CRITICAL: Process $pid ($name) $percentage% open filehandles: $fdCount/$limit\n";
     exit $CRITICAL;
   }
 
   # If we find a warning, remember, possibly overwriting other warnings.
   if ($percentage > $warning) {
-    $msg = "$test WARNING: Process $pid $percentage% open filehandles: $fdCount/$limit\n";
+    my $name = `ps -p $pid -o comm=`;
+    chomp($name);
+    $msg = "$test WARNING: Process $pid ($name) $percentage% open filehandles: $fdCount/$limit\n";
     $status = $WARNING;
   }
 }
